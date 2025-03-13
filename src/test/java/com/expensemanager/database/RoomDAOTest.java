@@ -19,14 +19,7 @@ public class RoomDAOTest {
     @Test
     @Order(1)
     void testInsertRoom() {
-        RoomDAO.insertRoom("Fiesta de cumpleaños");
-        int roomId = -1;
-        List<Room> rooms = RoomDAO.getAllRooms();
-        for (Room r : rooms) {
-            if (r.getName().equals("Fiesta de cumpleaños")) {
-                roomId = r.getId();
-            }
-        }
+        int roomId = RoomDAO.insertRoom("Fiesta de cumpleaños");
         assertThat(roomId).isGreaterThan(0);
 
         Room room = RoomDAO.getRoomById(roomId);
@@ -37,14 +30,7 @@ public class RoomDAOTest {
     @Test
     @Order(2)
     void testUpdateRoom() {
-        RoomDAO.insertRoom("Reunión familiar");
-        int roomId = -1;
-        List<Room> rooms = RoomDAO.getAllRooms();
-        for (Room r : rooms) {
-            if (r.getName().equals("Reunión familiar")) {
-                roomId = r.getId();
-            }
-        }
+        int roomId = RoomDAO.insertRoom("Reunión familiar");
         boolean updated = RoomDAO.updateRoom(roomId, "Reunión de primos");
 
         assertThat(updated).isTrue();
@@ -62,14 +48,7 @@ public class RoomDAOTest {
     @Test
     @Order(4)
     void testDeleteRoom() {
-        RoomDAO.insertRoom("Viaje a la playa");
-        int roomId = -1;
-        List<Room> rooms = RoomDAO.getAllRooms();
-        for (Room r : rooms) {
-            if (r.getName().equals("Viaje a la playa")) {
-                roomId = r.getId();
-            }
-        }
+        int roomId = RoomDAO.insertRoom("Viaje a la playa");
         boolean deleted = RoomDAO.deleteRoom(roomId);
 
         assertThat(deleted).isTrue();

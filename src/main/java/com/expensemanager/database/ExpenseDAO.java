@@ -82,7 +82,6 @@ public class ExpenseDAO {
 
     public static boolean deleteExpense(int id) {
         String sql = "DELETE FROM expenses WHERE id = ?";
-
         try (Connection conn = DataBaseManager.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);

@@ -66,27 +66,12 @@ public class UserDAO {
     }
 
     public static boolean deleteUser(int id) {
-        String checkExpensesSql = "SELECT COUNT(*) FROM expenses WHERE payer_id = ?";
-        String deleteUserSql = "DELETE FROM users WHERE id = ?";
-
+        String sql = "DELETE FROM users WHERE id = ?";
         try (Connection conn = DataBaseManager.connect();
-             PreparedStatement checkStmt = conn.prepareStatement(checkExpensesSql)) {
-
-            checkStmt.setInt(1, id);
-            ResultSet rs = checkStmt.executeQuery();
-
-            if (rs.next() && rs.getInt(1) > 0) {
-                System.out.println("No se puede eliminar el usuario con ID " + id + " porque tiene gastos registrados.");
-                return false;
-            }
-
-            // Si no tiene gastos, proceder con la eliminación
-            try (PreparedStatement deleteStmt = conn.prepareStatement(deleteUserSql)) {
-                deleteStmt.setInt(1, id);
-                int affectedRows = deleteStmt.executeUpdate();
-                return affectedRows > 0;
-            }
-
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
         } catch (SQLException e) {
             System.out.println("Error eliminando usuario: " + e.getMessage());
             return false;
