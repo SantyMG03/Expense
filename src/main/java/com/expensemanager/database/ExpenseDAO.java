@@ -131,4 +131,24 @@ public class ExpenseDAO {
         }
         return 0.0;
     }
+
+    public static List<Expense> getExpensesByRoom(int roomId) {
+        List<Expense> expenses = new ArrayList<>();
+        String sql = "SELECT id, amount, payer_id, room_id FROM expenses WHERE room_id = ?";
+
+        try (Connection conn = DataBaseManager.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, roomId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                User u = UserDAO.getUserById(rs.getInt("user_id"));
+                Room room = RoomDAO.getRoomById(rs.getInt("room_id"));
+                expenses.add(new Expense(rs.getInt("id"), rs.getDouble("amount"), u, room));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error obteniendo gastos: " + e.getMessage());
+        }
+        return expenses;
+    }
 }

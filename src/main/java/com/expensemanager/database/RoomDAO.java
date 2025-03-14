@@ -81,7 +81,7 @@ public class RoomDAO {
     }
 
     public static Room getRoomById(int id) {
-        String sql = "SELECT * FROM users WHERE id = ?";
+        String sql = "SELECT id, name FROM rooms WHERE id = ?";
 
         try (Connection conn = DataBaseManager.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
