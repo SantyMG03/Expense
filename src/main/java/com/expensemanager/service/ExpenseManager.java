@@ -62,6 +62,17 @@ public class ExpenseManager {
             System.out.println("El usuario no pertenece a esta sala");
             return -1;
         }
+        List<User> users = roomDAO.getUsersInRoom(roomId);
+        if (users.isEmpty()) {
+            System.out.println("No hay usuarios en la sala");
+            return -1;
+        }
+        double amountPerUser = amount / users.size();
+        for (User user : users) {
+            if (user.getId() == payerId) {
+                expenseDAO.insertExpense(amountPerUser, payerId, roomId);
+            }
+        }
         return expenseDAO.insertExpense(amount, payerId, roomId);
     }
 
@@ -96,6 +107,10 @@ public class ExpenseManager {
      * @return devuelve el balance del usuario o 0.0 si hubo algun error
      */
     public double getBalance(int userId, int roomId) {
+        return expenseDAO.calculateBalance(userId, roomId);
+    }
+
+    public double getUserBalance(int userId, int roomId) {
         return expenseDAO.calculateBalance(userId, roomId);
     }
 }

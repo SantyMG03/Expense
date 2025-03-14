@@ -115,7 +115,7 @@ public class ExpenseDAO {
         return null;
     }
 
-    public static double calculateBalance(int userId, int roomId) {
+    public double calculateBalance(int userId, int roomId) {
         String sql = "SELECT SUM(CASE WHEN payer_id = ? THEN amount ELSE -amount / (SELECT COUNT(*) FROM users_rooms WHERE room_id = ?) END) AS balance " +
                 "FROM expenses WHERE room_id = ?";
         try (Connection conn = DataBaseManager.connect();
