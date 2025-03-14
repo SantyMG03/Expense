@@ -21,10 +21,8 @@ public class ExpenseDAOTest {
     @Test
     @Order(1)
     void testInsertExpense() {
-        UserDAO.insertUser("Luis");
-        int userId = UserDAO.getIdByUser("Luis");
-        RoomDAO.insertRoom("Fiesta de fin de año");
-        int roomId = RoomDAO.getIdByRoom("Fiesta de fin de año");
+        int userId = UserDAO.insertUser("Luis");
+        int roomId = RoomDAO.insertRoom("Fiesta de fin de año");
 
         int expenseId = ExpenseDAO.insertExpense(200.0, userId, roomId);
         assertThat(expenseId).isGreaterThan(0);
@@ -37,10 +35,8 @@ public class ExpenseDAOTest {
     @Test
     @Order(2)
     void testUpdateExpense() {
-        UserDAO.insertUser("Pedro");
-        int userId = UserDAO.getIdByUser("Pedro");
-        RoomDAO.insertRoom("Cena con amigos");
-        int roomId = RoomDAO.getIdByRoom("Cena con amigos");
+        int userId = UserDAO.insertUser("Pedro");
+        int roomId = RoomDAO.insertRoom("Cena con amigos");
         int expenseId = ExpenseDAO.insertExpense(150.0, userId, roomId);
 
         boolean updated = ExpenseDAO.updateExpense(expenseId, 180.0, userId, roomId);
@@ -60,11 +56,8 @@ public class ExpenseDAOTest {
     @Test
     @Order(4)
     void testDeleteExpense() {
-        UserDAO.insertUser("María");
-        int userId = UserDAO.getIdByUser("Luis");
-        RoomDAO.insertRoom("Camping");
-        int roomId = RoomDAO.getIdByRoom("Camping");
-
+        int userId = UserDAO.insertUser("María");
+        int roomId = RoomDAO.insertRoom("Camping");
         int expenseId = ExpenseDAO.insertExpense(250.0, userId, roomId);
 
         boolean deleted = ExpenseDAO.deleteExpense(expenseId);

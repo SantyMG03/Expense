@@ -95,19 +95,4 @@ public class UserDAO {
         }
         return null;
     }
-
-    public static int getIdByUser(String username) {
-        String sql = "SELECT id FROM users WHERE username = ?";
-        try (Connection conn = DataBaseManager.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, username);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("id");
-            }
-        } catch (SQLException e) {
-            System.out.println("Error obteniendo ID por usuario: " + e.getMessage());
-        }
-        return -1;
-    }
 }

@@ -9,7 +9,6 @@ public class DataBaseManager {
     private static final String URL = "jdbc:sqlite:expensemanager.db";
 
     public static Connection connect() {
-        Connection conn = null;
         try{
             return DriverManager.getConnection(URL);
         }catch (SQLException e) {

@@ -21,12 +21,13 @@ public class RoomDAO {
     public static int insertRoom(String name) {
         String sql = "INSERT INTO rooms (name) VALUES (?)";
         try (Connection conn = DataBaseManager.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, name);
             pstmt.executeUpdate();
-            ResultSet rs = pstmt.getGeneratedKeys();
-            if (rs.next()) {
-                return rs.getInt(1);
+            try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
             }
         } catch (SQLException e) {
             System.out.println("Error insertando sala: " + e.getMessage());
@@ -93,22 +94,5 @@ public class RoomDAO {
             System.out.println("Error obteniendo room por ID: " + e.getMessage());
         }
         return null;
-    }
-
-    public static int getIdByRoom(String roomname) {
-        String sql = "SELECT id FROM rooms WHERE name = ?";
-
-        try (Connection conn = DataBaseManager.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1, roomname);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("id");
-            }
-        } catch (SQLException e) {
-            System.out.println("Error obteniendo sala: " + e.getMessage());
-        }
-        return -1;
     }
 }

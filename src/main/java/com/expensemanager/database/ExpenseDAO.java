@@ -29,7 +29,7 @@ public class ExpenseDAO {
     public static int insertExpense(double amount, int payerId, int roomId) {
         String sql = "INSERT INTO expenses (amount, payer_id, room_id) VALUES (?, ?, ?)";
         try (Connection conn = DataBaseManager.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             pstmt.setDouble(1, amount);
             pstmt.setInt(2, payerId);
             pstmt.setInt(3, roomId);
@@ -115,18 +115,4 @@ public class ExpenseDAO {
         return null;
     }
 
-    public static int getIdByExpense(Expense expense) {
-        String sql = "SELECT id FROM expenses WHERE id = ?";
-        try (Connection conn = DataBaseManager.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, expense.getId());
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("id");
-            }
-        } catch (SQLException e) {
-            System.out.println("Error obteniendo id por expenses: " + e.getMessage());
-        }
-        return -1;
-    }
 }
