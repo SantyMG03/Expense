@@ -115,4 +115,20 @@ public class ExpenseDAO {
         return null;
     }
 
+    public static double calculateBalance(int userId, int roomId) {
+        String sql = "SELECT SUM(CASE WHEN payer_id = ? THEN amount ELSE -amount / (SELECT COUNT(*) FROM users_rooms WHERE room_id = ?) END) AS balance " +
+                "FROM expenses WHERE room_id = ?";
+        try (Connection conn = DataBaseManager.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, roomId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble("balance");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al calcular el balance: " + e.getMessage());
+        }
+        return 0.0;
+    }
 }

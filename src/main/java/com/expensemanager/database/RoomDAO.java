@@ -1,6 +1,8 @@
 package com.expensemanager.database;
 
 import com.expensemanager.model.Room;
+import com.expensemanager.model.User;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,5 +96,51 @@ public class RoomDAO {
             System.out.println("Error obteniendo room por ID: " + e.getMessage());
         }
         return null;
+    }
+
+    public static boolean addUserToRoom(int userId, int roomId) {
+        String sql = "INSERT INTO room_users (room_id, user_id) VALUES (?, ?)";
+        try (Connection conn = DataBaseManager.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, roomId);
+            pstmt.setInt(2, userId);
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Error al agregar usuario a la sala: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static boolean isUserInRoom(int userId, int roomId) {
+        String sql = "SELECT COUNT(*) FROM room_users WHERE user_id = ? AND room_id = ?";
+
+        try (Connection conn = DataBaseManager.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, roomId);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            System.out.println("Error al verificar usuario en la sala: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static List<User> getUsersInRoom(int roomId) {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT u.id, u.name FROM users u " +
+                "JOIN room_users ru ON u.id = ru.user_id " +
+                "WHERE ru.room_id = ?";
+        try (Connection conn = DataBaseManager.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, roomId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                users.add(new User(rs.getInt("id"), rs.getString("name")));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error obteniendo usuarios en la sala: " + e.getMessage());
+        }
+        return users;
     }
 }
