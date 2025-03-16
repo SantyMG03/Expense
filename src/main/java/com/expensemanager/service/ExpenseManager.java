@@ -114,6 +114,12 @@ public class ExpenseManager {
         return expenseDAO.calculateBalance(userId, roomId);
     }
 
+    /**
+     * Metodo para obtener una lista de pagos de un sala, la estructura sera:
+     * ID (del pago) | Cantidad | ID (Del pagador)
+     * Todo (Posible modificacion) Cambiar id del pagado por el nombre
+     * @param roomId identificador de la sala de la que obtener todos los gastos
+     */
     public void showRoomExpenses(int roomId) {
         List<Expense> expenses = expenseDAO.getExpensesByRoom(roomId);
 
@@ -126,6 +132,30 @@ public class ExpenseManager {
                         " | Monto: " + expense.getAmount() +
                         " | Pagado por (UserID): " + expense.getPayer().getId());
             }
+        }
+    }
+
+    /**
+     * Funcion para eliminar un gasto en una sala
+     * @param expenseId identificador del gasto a borrar
+     * @param roomId identificador de la sala
+     * @return True si el gasto se elimino, False si no
+     */
+    public boolean removeExpense(int expenseId, int roomId) {
+        boolean isDeleted = ExpenseDAO.deleteExpense(expenseId);
+        if (isDeleted) {
+            System.out.println("Gasto eliminado correctamente");
+
+            // Una vez borrado actualizar el balance de los usuarios en la sala
+            List<User> users = roomDAO.getUsersInRoom(roomId);
+            for (User user : users) {
+                double newBalance = expenseDAO.calculateBalance(user.getId(), roomId);
+                System.out.println("Nuevo balance de " + user.getName() + " es: " + newBalance);
+            }
+            return true;
+        } else {
+            System.out.println("No se pudo eliminar el gasto correctamente");
+            return false;
         }
     }
 }
