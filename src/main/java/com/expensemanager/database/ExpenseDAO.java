@@ -116,12 +116,13 @@ public class ExpenseDAO {
     }
 
     public double calculateBalance(int userId, int roomId) {
-        String sql = "SELECT SUM(CASE WHEN payer_id = ? THEN amount ELSE -amount / (SELECT COUNT(*) FROM users_rooms WHERE room_id = ?) END) AS balance " +
+        String sql = "SELECT SUM(CASE WHEN payer_id = ? THEN amount ELSE -amount / (SELECT COUNT(*) FROM room_users WHERE room_id = ?) END) AS balance " +
                 "FROM expenses WHERE room_id = ?";
         try (Connection conn = DataBaseManager.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
             pstmt.setInt(2, roomId);
+            pstmt.setInt(3, roomId);  // Falta este parámetro para la consulta principal
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return rs.getDouble("balance");
@@ -142,7 +143,7 @@ public class ExpenseDAO {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                User u = UserDAO.getUserById(rs.getInt("user_id"));
+                User u = UserDAO.getUserById(rs.getInt("payer_id"));
                 Room room = RoomDAO.getRoomById(rs.getInt("room_id"));
                 expenses.add(new Expense(rs.getInt("id"), rs.getDouble("amount"), u, room));
             }

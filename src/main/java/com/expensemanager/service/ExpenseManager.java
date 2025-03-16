@@ -113,4 +113,19 @@ public class ExpenseManager {
     public double getUserBalance(int userId, int roomId) {
         return expenseDAO.calculateBalance(userId, roomId);
     }
+
+    public void showRoomExpenses(int roomId) {
+        List<Expense> expenses = expenseDAO.getExpensesByRoom(roomId);
+
+        if (expenses.isEmpty()) {
+            System.out.println("No hay gastos registrados en la sala");
+        } else {
+            System.out.println("Historial de gastos en la sala " + roomId + ":");
+            for (Expense expense : expenses) {
+                System.out.println("ID: " + expense.getId() +
+                        " | Monto: " + expense.getAmount() +
+                        " | Pagado por (UserID): " + expense.getPayer().getId());
+            }
+        }
+    }
 }

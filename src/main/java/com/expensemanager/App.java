@@ -40,5 +40,7 @@ public class App {
         System.out.println("Balance de Alice: " + expenseManager.getUserBalance(user1, roomId));
         System.out.println("Balance de Bob: " + expenseManager.getUserBalance(user2, roomId));
         System.out.println("Balance de Charlie: " + expenseManager.getUserBalance(user3, roomId));
+
+        expenseManager.showRoomExpenses(7);
     }
 }

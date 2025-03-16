@@ -99,11 +99,13 @@ public class RoomDAO {
     }
 
     public static boolean addUserToRoom(int userId, int roomId) {
+        System.out.println("Añadiendo usuario con ID " + userId + " a la sala con ID " + roomId);
         String sql = "INSERT INTO room_users (room_id, user_id) VALUES (?, ?)";
         try (Connection conn = DataBaseManager.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, roomId);
             pstmt.setInt(2, userId);
+            pstmt.executeUpdate();
             return true;
         } catch (SQLException e) {
             System.out.println("Error al agregar usuario a la sala: " + e.getMessage());
