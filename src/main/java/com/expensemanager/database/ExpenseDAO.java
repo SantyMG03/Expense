@@ -94,7 +94,7 @@ public class ExpenseDAO {
     }
 
     public static Expense getExpenseById(int id) {
-        String sql = "SELECT * FROM users WHERE id = ?";
+        String sql = "SELECT id, amount, payer_id, room_id FROM expenses WHERE id = ?";
 
         try (Connection conn = DataBaseManager.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -103,7 +103,7 @@ public class ExpenseDAO {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                User user = UserDAO.getUserById(rs.getInt("user_id"));
+                User user = UserDAO.getUserById(rs.getInt("payer_id"));
                 int roomId = rs.getInt("room_id");
                 double amount = rs.getDouble("amount");
                 Room room = RoomDAO.getRoomById(roomId);

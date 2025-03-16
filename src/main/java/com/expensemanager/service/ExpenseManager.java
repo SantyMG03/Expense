@@ -138,10 +138,18 @@ public class ExpenseManager {
     /**
      * Funcion para eliminar un gasto en una sala
      * @param expenseId identificador del gasto a borrar
+     * @param userId identificador del usuario que hizo el pago
      * @param roomId identificador de la sala
      * @return True si el gasto se elimino, False si no
      */
-    public boolean removeExpense(int expenseId, int roomId) {
+    public boolean removeExpense(int expenseId, int userId,int roomId) {
+        Expense expense = expenseDAO.getExpenseById(expenseId);
+        // No se puede borra un pago que no haya hecho el mismo usuario
+        if (expense == null || expense.getPayer().getId() != userId) {
+            System.out.println("El usuario no tiene permiso para eliminar este gasto");
+            return false;
+        }
+
         boolean isDeleted = ExpenseDAO.deleteExpense(expenseId);
         if (isDeleted) {
             System.out.println("Gasto eliminado correctamente");
