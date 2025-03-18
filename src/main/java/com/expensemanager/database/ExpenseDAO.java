@@ -26,6 +26,13 @@ public class ExpenseDAO {
         }
     }
 
+    /**
+     * Metodo para insertar un gasto en una sala
+     * @param amount Cantidad pagada
+     * @param payerId Identificador del pagador
+     * @param roomId Identificador de la sala
+     * @return Devuelve la cantidad del pago sin decimales
+     */
     public static int insertExpense(double amount, int payerId, int roomId) {
         String sql = "INSERT INTO expenses (amount, payer_id, room_id) VALUES (?, ?, ?)";
         try (Connection conn = DataBaseManager.connect();
@@ -44,6 +51,10 @@ public class ExpenseDAO {
         return -1;
     }
 
+    /**
+     * Metodo para obtener todos los gastos
+     * @return Devuelve una lista con todos los gastos
+     */
     public static List<Expense> getAllExpenses() {
         List<Expense> expenses = new ArrayList<>();
         String sql = "SELECT e.id, e.amount, u.id AS user_id, u.name, r.id AS room_id, r.name AS room_name " +
@@ -64,6 +75,14 @@ public class ExpenseDAO {
         return expenses;
     }
 
+    /**
+     * Metodo para actualizar un gasto
+     * @param id identificador del pago
+     * @param newAmount el nuevo pago que sustituira el antiguo
+     * @param newPayerId identificador del pagador
+     * @param newRoomId identificador del la sala
+     * @return True si se actualizo correctamente, False si no
+     */
     public static boolean updateExpense(int id, double newAmount, int newPayerId, int newRoomId) {
         String sql = "UPDATE expenses SET amount = ?, payer_id = ?, room_id = ? WHERE id = ?";
         try (Connection conn = DataBaseManager.connect();
@@ -80,6 +99,11 @@ public class ExpenseDAO {
         }
     }
 
+    /**
+     * Metodo para borrar un gasto
+     * @param id identificador del gasto
+     * @return True si se borro correctamente, False si no
+     */
     public static boolean deleteExpense(int id) {
         String sql = "DELETE FROM expenses WHERE id = ?";
         try (Connection conn = DataBaseManager.connect();
@@ -93,6 +117,11 @@ public class ExpenseDAO {
         }
     }
 
+    /**
+     * Metodo para obtener un gasto a traves de su id
+     * @param id identificador del pago
+     * @return el gasto con identificador id, null si no esta u ocurrio algun fallo
+     */
     public static Expense getExpenseById(int id) {
         String sql = "SELECT id, amount, payer_id, room_id FROM expenses WHERE id = ?";
 
@@ -115,6 +144,12 @@ public class ExpenseDAO {
         return null;
     }
 
+    /**
+     * Metodo para obtener el balance de una persona en una sala
+     * @param userId identidficador del usuario
+     * @param roomId identificador de la sala
+     * @return el balance exacto del usuario
+     */
     public double calculateBalance(int userId, int roomId) {
         String sql = "SELECT SUM(CASE WHEN payer_id = ? THEN amount ELSE -amount / (SELECT COUNT(*) FROM room_users WHERE room_id = ?) END) AS balance " +
                 "FROM expenses WHERE room_id = ?";
@@ -122,7 +157,7 @@ public class ExpenseDAO {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
             pstmt.setInt(2, roomId);
-            pstmt.setInt(3, roomId);  // Falta este parámetro para la consulta principal
+            pstmt.setInt(3, roomId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return rs.getDouble("balance");
@@ -133,6 +168,11 @@ public class ExpenseDAO {
         return 0.0;
     }
 
+    /**
+     * Metodo para obtener un lista con los gastos de una sala
+     * @param roomId identificador de la sala
+     * @return una lista con gastos o una lista vacia en caso de que no haya gastos
+     */
     public static List<Expense> getExpensesByRoom(int roomId) {
         List<Expense> expenses = new ArrayList<>();
         String sql = "SELECT id, amount, payer_id, room_id FROM expenses WHERE room_id = ?";

@@ -16,6 +16,7 @@ public class JoinRoomScreen extends Stage {
         for (String room : rooms) {
             Button joinButton = new Button("Unirse a " + room);
             joinButton.setOnAction(e -> {
+                // Todo agregar aqui la logica para unirse a una sala seleccionada
                 System.out.println("Te has unido a " + room);
                 this.close();
             });

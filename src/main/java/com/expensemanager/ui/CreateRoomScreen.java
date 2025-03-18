@@ -17,7 +17,7 @@ public class CreateRoomScreen extends Stage {
         createButton.setOnAction(e -> {
             String roomName = roomNameField.getText();
             if (!roomName.isEmpty()) {
-                // Todo agregar aqui el codigo correspondiente a la BD
+                // Todo agregar aqui la logica correspondiente a crear una sala y unirse a ella
                 System.out.println("Sala creada: " + roomName);
                 this.close();  // Cerrar la ventana de creación
             } else {
