@@ -26,11 +26,13 @@ public class ExpenseManagerApp extends Application {
        Button joinRoomButton = new Button("Join Room");
 
        createRoomButton.setOnAction(e -> {
-           System.out.println("Crear nueva sala");
+           CreateRoomScreen createRoomScreen = new CreateRoomScreen();
+           createRoomScreen.show();
        });
 
        joinRoomButton.setOnAction(e -> {
-           System.out.println("Unirse a una sala");
+           JoinRoomScreen joinRoomScreen = new JoinRoomScreen();
+           joinRoomScreen.show();
        });
 
        VBox layout = new VBox(20);
