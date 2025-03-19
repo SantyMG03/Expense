@@ -5,8 +5,6 @@ import org.junit.jupiter.api.*;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RoomDAOTest {
 
@@ -20,11 +18,11 @@ public class RoomDAOTest {
     @Order(1)
     void testInsertRoom() {
         int roomId = RoomDAO.insertRoom("Fiesta de cumpleaños");
-        assertThat(roomId).isGreaterThan(0);
+        assert(roomId > 0);
 
         Room room = RoomDAO.getRoomById(roomId);
-        assertThat(room).isNotNull();
-        assertThat(room.getName()).isEqualTo("Fiesta de cumpleaños");
+        assert(room != null);
+        assert(room.getName().equals("Fiesta de cumpleaños"));
     }
 
     @Test
@@ -33,16 +31,16 @@ public class RoomDAOTest {
         int roomId = RoomDAO.insertRoom("Reunión familiar");
         boolean updated = RoomDAO.updateRoom(roomId, "Reunión de primos");
 
-        assertThat(updated).isTrue();
+        assert(updated);
         Room room = RoomDAO.getRoomById(roomId);
-        assertThat(room.getName()).isEqualTo("Reunión de primos");
+        assert(room.getName().equals("Reunión de primos"));
     }
 
     @Test
     @Order(3)
     void testGetAllRooms() {
         List<Room> rooms = RoomDAO.getAllRooms();
-        assertThat(rooms).isNotEmpty();
+        assert(!rooms.isEmpty());
     }
 
     @Test
@@ -51,7 +49,7 @@ public class RoomDAOTest {
         int roomId = RoomDAO.insertRoom("Viaje a la playa");
         boolean deleted = RoomDAO.deleteRoom(roomId);
 
-        assertThat(deleted).isTrue();
-        assertThat(RoomDAO.getRoomById(roomId)).isNull();
+        assert(deleted);
+        assert(RoomDAO.getRoomById(roomId) == null);
     }
 }

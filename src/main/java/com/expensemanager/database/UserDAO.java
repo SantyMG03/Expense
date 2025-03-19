@@ -19,6 +19,11 @@ public class UserDAO {
         }
     }
 
+    /**
+     * Metodo para insertar un usuario
+     * @param name nombre del usuario
+     * @return devuelve el id del usuario insertado
+     */
     public static int insertUser(String name) {
         String sql = "INSERT INTO users (name) VALUES (?)";
         try (Connection conn = DataBaseManager.connect();
@@ -35,6 +40,10 @@ public class UserDAO {
         return -1;
     }
 
+    /**
+     * Metodo para obtener todos los usuarios
+     * @return devuelve una lista con todos los usuarios o vacia si no hay
+     */
     public static List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM users";
@@ -51,6 +60,12 @@ public class UserDAO {
         return users;
     }
 
+    /**
+     * Metodo para actualizar un usuario
+     * @param id identificador del usuario
+     * @param name nombre del usuario
+     * @return True si se actualiza correctamente, False si no
+     */
     public static boolean updateUser(int id, String name) {
         String sql = "UPDATE users SET name = ? WHERE id = ?";
         try (Connection conn = DataBaseManager.connect();
@@ -65,6 +80,11 @@ public class UserDAO {
         }
     }
 
+    /**
+     * Metodo para borrar un usuario
+     * @param id identificador del usuario a borra
+     * @return True si se borro correctamente, False si no
+     */
     public static boolean deleteUser(int id) {
         String sql = "DELETE FROM users WHERE id = ?";
         try (Connection conn = DataBaseManager.connect();
@@ -78,6 +98,11 @@ public class UserDAO {
         }
     }
 
+    /**
+     * Metodo para obtener un usuario por su id
+     * @param id identificador del usuario a borra
+     * @return Devuelve el usuario
+     */
     public static User getUserById(int id) {
         String sql = "SELECT * FROM users WHERE id = ?";
 

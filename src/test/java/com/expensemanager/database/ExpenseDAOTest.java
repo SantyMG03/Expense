@@ -5,8 +5,6 @@ import org.junit.jupiter.api.*;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ExpenseDAOTest {
 
@@ -25,11 +23,11 @@ public class ExpenseDAOTest {
         int roomId = RoomDAO.insertRoom("Fiesta de fin de año");
 
         int expenseId = ExpenseDAO.insertExpense(200.0, userId, roomId);
-        assertThat(expenseId).isGreaterThan(0);
+        assert(expenseId > 0);
 
         Expense expense = ExpenseDAO.getExpenseById(expenseId);
-        assertThat(expense).isNotNull();
-        assertThat(expense.getAmount()).isEqualTo(200.0);
+        assert(expense != null);
+        assert(expense.getAmount() == 200.0);
     }
 
     @Test
@@ -40,17 +38,17 @@ public class ExpenseDAOTest {
         int expenseId = ExpenseDAO.insertExpense(150.0, userId, roomId);
 
         boolean updated = ExpenseDAO.updateExpense(expenseId, 180.0, userId, roomId);
-        assertThat(updated).isTrue();
+        assert(updated);
 
         Expense expense = ExpenseDAO.getExpenseById(expenseId);
-        assertThat(expense.getAmount()).isEqualTo(180.0);
+        assert(expense.getAmount() == 180.0);
     }
 
     @Test
     @Order(3)
     void testGetAllExpenses() {
         List<Expense> expenses = ExpenseDAO.getAllExpenses();
-        assertThat(expenses).isNotEmpty();
+        assert(!expenses.isEmpty());
     }
 
     @Test
@@ -61,7 +59,7 @@ public class ExpenseDAOTest {
         int expenseId = ExpenseDAO.insertExpense(250.0, userId, roomId);
 
         boolean deleted = ExpenseDAO.deleteExpense(expenseId);
-        assertThat(deleted).isTrue();
-        assertThat(ExpenseDAO.getExpenseById(expenseId)).isNull();
+        assert(deleted);
+        assert(ExpenseDAO.getExpenseById(expenseId) == null);
     }
 }
