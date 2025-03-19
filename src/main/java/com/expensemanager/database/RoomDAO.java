@@ -145,4 +145,17 @@ public class RoomDAO {
         }
         return users;
     }
+
+    public boolean roomExistByName(String name) {
+        String sql = "SELECT COUNT(*) FROM rooms WHERE name = ?";
+        try (Connection conn = DataBaseManager.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            System.out.println("Error verificando si la sala existe " + e.getMessage());
+        }
+        return false;
+    }
 }

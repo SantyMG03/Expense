@@ -4,6 +4,7 @@ import com.expensemanager.database.ExpenseDAO;
 import com.expensemanager.database.RoomDAO;
 import com.expensemanager.database.UserDAO;
 import com.expensemanager.model.Expense;
+import com.expensemanager.model.Room;
 import com.expensemanager.model.User;
 
 import java.util.List;
@@ -20,6 +21,18 @@ public class ExpenseManager {
         this.userDAO = new UserDAO();
         this.expenseDAO = new ExpenseDAO();
         this.roomDAO = new RoomDAO();
+    }
+
+    public boolean roomExists(int roomId) {
+        return roomDAO.getRoomById(roomId) != null;
+    }
+
+    public int createRoom(String name) {
+        if (roomDAO.roomExistByName(name)) {
+            System.out.println("Error: Ya existe una sala con ese nombre");
+            return -1;
+        }
+        return roomDAO.insertRoom(name);
     }
 
     /**
