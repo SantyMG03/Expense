@@ -6,6 +6,7 @@ import com.expensemanager.database.UserDAO;
 import com.expensemanager.model.Expense;
 import com.expensemanager.model.Room;
 import com.expensemanager.model.User;
+import com.expensemanager.service.ExpenseManager;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -19,6 +20,7 @@ public class ExpenseManagerApp extends Application {
     private ExpenseDAO expenseDAO = new ExpenseDAO();
     private UserDAO userDAO = new UserDAO();
     private RoomDAO roomDAO = new RoomDAO();
+    private ExpenseManager expenseManager = new ExpenseManager();
 
     @Override
     public void start(Stage primaryStage) {
@@ -31,7 +33,7 @@ public class ExpenseManagerApp extends Application {
        });
 
        joinRoomButton.setOnAction(e -> {
-           JoinRoomScreen joinRoomScreen = new JoinRoomScreen();
+           JoinRoomScreen joinRoomScreen = new JoinRoomScreen(primaryStage, expenseManager);
            joinRoomScreen.show();
        });
 

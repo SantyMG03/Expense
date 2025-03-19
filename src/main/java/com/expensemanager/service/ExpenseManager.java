@@ -23,6 +23,10 @@ public class ExpenseManager {
         this.roomDAO = new RoomDAO();
     }
 
+    public List<Room> getRooms(){
+        return roomDAO.getAllRooms();
+    }
+
     public boolean roomExists(int roomId) {
         return roomDAO.getRoomById(roomId) != null;
     }
