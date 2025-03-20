@@ -183,4 +183,18 @@ public class ExpenseManager {
             return false;
         }
     }
+
+    public boolean registerUser(String username, String password) {
+        if (username == null || password == null || username.isBlank() || password.isBlank()) {
+            System.out.println("Nombre de usuario o contraseña no pueden estar vacios");
+            return false;
+        }
+
+        if (userDAO.getUserByName(username) != null) {
+            System.out.println("Usuario ya existente");
+            return false;
+        }
+
+        return userDAO.insertUser(new(Use))
+    }
 }

@@ -7,10 +7,13 @@ import java.util.List;
 
 public class UserDAO {
 
+    private final String url = "jdbc:sqlite:expensemanager.db";
+
     public static void createTable() {
         String sql = "CREATE TABLE IF NOT EXISTS users (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "name TEXT NOT NULL)";
+                "name TEXT NOT NULL)" +
+                "password TEXT NOT NULL)";
 
         try (Connection conn = DataBaseManager.connect(); Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
@@ -21,23 +24,25 @@ public class UserDAO {
 
     /**
      * Metodo para insertar un usuario
-     * @param name nombre del usuario
+     * @param user usuario a insertar
      * @return devuelve el id del usuario insertado
      */
-    public static int insertUser(String name) {
-        String sql = "INSERT INTO users (name) VALUES (?)";
-        try (Connection conn = DataBaseManager.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)){
-            pstmt.setString(1, name);
-            pstmt.executeUpdate();
-            ResultSet rs = pstmt.getGeneratedKeys();
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
+    public boolean insertUser(User user) {
+        String sql = "INSERT INTO users (username, password) VALUES (?, ?)";
+
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, user.getName());
+            stmt.setString(2, user.getPsw());
+
+            int rowsInserted = stmt.executeUpdate();
+            return rowsInserted > 0;
+
         } catch (SQLException e) {
-            System.out.println("Error insertando usuario: " + e.getMessage());
+            System.out.println("Error al registrar usuario: " + e.getMessage());
+            return false;
         }
-        return -1;
     }
 
     /**
@@ -117,6 +122,26 @@ public class UserDAO {
             }
         } catch (SQLException e) {
             System.out.println("Error obteniendo usuario por ID: " + e.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * Método para obtener un usuario por su nombre
+     * @param name Nombre del usuario a buscar
+     * @return Objeto User si existe, null si no se encuentra
+     */
+    public User getUserByName(String name) {
+        String sql = "SELECT * FROM users WHERE name = ?";
+        try (Connection conn = DataBaseManager.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return new User(rs.getInt("id"), rs.getString("name"), rs.getString("password"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al buscar usuario: " + e.getMessage());
         }
         return null;
     }

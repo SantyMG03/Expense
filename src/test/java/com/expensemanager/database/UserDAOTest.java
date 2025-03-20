@@ -17,8 +17,8 @@ public class UserDAOTest {
     @Test
     @Order(1)
     void testInsertUser() {
-        int userId = UserDAO.insertUser("Juan");
-        assert(userId > 0);
+        boolean userId = UserDAO.insertUser(new User());
+        assert(userId);
 
         User user = UserDAO.getUserById(userId);
         assert(user != null);
