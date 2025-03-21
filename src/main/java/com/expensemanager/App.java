@@ -17,6 +17,6 @@ public class App {
         int roomId = 7;    // ID de la sala a la que pertenece el gasto
 
         ExpenseManager manager = new ExpenseManager();
-        manager.removeExpense(expenseId, userId, roomId);
+        //manager.removeExpense(expenseId, userId, roomId);
     }
 }

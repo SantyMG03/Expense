@@ -7,142 +7,122 @@ import java.util.List;
 
 public class UserDAO {
 
-    private final String url = "jdbc:sqlite:expensemanager.db";
-
     public static void createTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS users (" +
+        String sql = "CREATE TABLE IF NOT EXISTS users(" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "name TEXT NOT NULL)" +
-                "password TEXT NOT NULL)";
-
-        try (Connection conn = DataBaseManager.connect(); Statement stmt = conn.createStatement()) {
+                "name TEXT NOT NULL UNIQUE, psw TEXT NOT NULL);";
+        try (Connection conn = DataBaseManager.connect();
+             Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
         } catch (SQLException e) {
-            System.out.println("Error creando la tabla users: " + e.getMessage());
+            System.out.println("Error creating table" + e.getMessage());
         }
     }
 
-    /**
-     * Metodo para insertar un usuario
-     * @param user usuario a insertar
-     * @return devuelve el id del usuario insertado
-     */
-    public boolean insertUser(User user) {
-        String sql = "INSERT INTO users (username, password) VALUES (?, ?)";
+    public static boolean insertUser(String name, String psw) {
+        String sql = "INSERT INTO users (name, psw) VALUES (?, ?)";
+        if (name.isBlank() || name.isEmpty() || psw.isBlank() || psw.isEmpty()) {
+            return false;
+        }
+        try (Connection conn = DataBaseManager.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-        try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            pstmt.setString(2, psw);
 
-            stmt.setString(1, user.getName());
-            stmt.setString(2, user.getPsw());
-
-            int rowsInserted = stmt.executeUpdate();
-            return rowsInserted > 0;
+            return pstmt.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            System.out.println("Error al registrar usuario: " + e.getMessage());
+            System.out.println("Error al insertar un usuario" + e.getMessage());
             return false;
         }
     }
 
-    /**
-     * Metodo para obtener todos los usuarios
-     * @return devuelve una lista con todos los usuarios o vacia si no hay
-     */
-    public static List<User> getAllUsers() {
-        List<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM users";
+    public static User getUserById(int id) {
+        String sql = "SELECT * FROM users WHERE id = ?";
         try (Connection conn = DataBaseManager.connect();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-                 while (rs.next()) {
-                     users.add(new User(rs.getInt("id"), rs.getString("name")));
-                 }
-
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new User(rs.getString("name"), rs.getString("psw"));
+            }
         } catch (SQLException e) {
-            System.out.println("Error obteniendo usuarios: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static User getUserByName(String name) {
+        String sql = "SELECT name FROM users WHERE name = ?";
+        try (Connection conn = DataBaseManager.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new User(rs.getString("name"), rs.getString("psw"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static int getUserIdByName(String name) {
+        String sql = "SELECT id FROM users WHERE name = ?";
+        try (Connection conn = DataBaseManager.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public static boolean validateUser(String name, String psw) {
+        String sql = "SELECT COUNT(*) FROM users WHERE name = ? AND psw = ?";
+        try (Connection conn = DataBaseManager.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            stmt.setString(2, psw);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static List<String> getAllUsers() {
+        List<String> users = new ArrayList<>();
+        String sql = "SELECT name FROM users";
+        try (Connection conn = DataBaseManager.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()){
+
+            while (rs.next()) {
+                users.add(rs.getString("name"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return users;
     }
 
-    /**
-     * Metodo para actualizar un usuario
-     * @param id identificador del usuario
-     * @param name nombre del usuario
-     * @return True si se actualiza correctamente, False si no
-     */
-    public static boolean updateUser(int id, String name) {
-        String sql = "UPDATE users SET name = ? WHERE id = ?";
+    public static boolean deleteUser(String name) {
+        String sql = "DELETE FROM users WHERE name = ?";
         try (Connection conn = DataBaseManager.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, name);
-            pstmt.setInt(2, id);
-            int affectedRows = pstmt.executeUpdate();
-            return affectedRows > 0;
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println("Error actualizando usuario: " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
 
-    /**
-     * Metodo para borrar un usuario
-     * @param id identificador del usuario a borra
-     * @return True si se borro correctamente, False si no
-     */
-    public static boolean deleteUser(int id) {
-        String sql = "DELETE FROM users WHERE id = ?";
-        try (Connection conn = DataBaseManager.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            int affectedRows = pstmt.executeUpdate();
-            return affectedRows > 0;
-        } catch (SQLException e) {
-            System.out.println("Error eliminando usuario: " + e.getMessage());
-            return false;
-        }
-    }
-
-    /**
-     * Metodo para obtener un usuario por su id
-     * @param id identificador del usuario a borra
-     * @return Devuelve el usuario
-     */
-    public static User getUserById(int id) {
-        String sql = "SELECT * FROM users WHERE id = ?";
-
-        try (Connection conn = DataBaseManager.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, id);
-            ResultSet rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                return new User(rs.getInt("id"), rs.getString("name"));
-            }
-        } catch (SQLException e) {
-            System.out.println("Error obteniendo usuario por ID: " + e.getMessage());
-        }
-        return null;
-    }
-
-    /**
-     * Método para obtener un usuario por su nombre
-     * @param name Nombre del usuario a buscar
-     * @return Objeto User si existe, null si no se encuentra
-     */
-    public User getUserByName(String name) {
-        String sql = "SELECT * FROM users WHERE name = ?";
-        try (Connection conn = DataBaseManager.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, name);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return new User(rs.getInt("id"), rs.getString("name"), rs.getString("password"));
-            }
-        } catch (SQLException e) {
-            System.out.println("Error al buscar usuario: " + e.getMessage());
-        }
-        return null;
-    }
 }

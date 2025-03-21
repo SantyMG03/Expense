@@ -85,11 +85,14 @@ public class ExpenseManager {
             return -1;
         }
         double amountPerUser = amount / users.size();
+        /*
         for (User user : users) {
-            if (user.getId() == payerId) {
+            if (UserDAO.ge == payerId) {
                 expenseDAO.insertExpense(amountPerUser, payerId, roomId);
             }
         }
+
+         */
         return expenseDAO.insertExpense(amount, payerId, roomId);
     }
 
@@ -98,6 +101,7 @@ public class ExpenseManager {
      * @param expenseId identidicador del gasto (podemos obtener sala solo con esto)
      * @return un mapa donde cada usuario tiene asociado la cantidad que debe
      */
+    /*
     public Map<Integer, Double> splitExpense(int expenseId) {
         Expense expense = expenseDAO.getExpenseById(expenseId);
         if (expense == null) {
@@ -116,6 +120,8 @@ public class ExpenseManager {
 
         return users.stream().collect(Collectors.toMap(User::getId, user -> split));
     }
+
+     */
 
     /**
      * Metodo para consultar el balance de un usuario en una sala
@@ -147,18 +153,12 @@ public class ExpenseManager {
             for (Expense expense : expenses) {
                 System.out.println("ID: " + expense.getId() +
                         " | Monto: " + expense.getAmount() +
-                        " | Pagado por (UserID): " + expense.getPayer().getId());
+                        " | Pagado por: " + UserDAO.getUserIdByName(expense.getPayer().getName()));
             }
         }
     }
 
-    /**
-     * Funcion para eliminar un gasto en una sala
-     * @param expenseId identificador del gasto a borrar
-     * @param userId identificador del usuario que hizo el pago
-     * @param roomId identificador de la sala
-     * @return True si el gasto se elimino, False si no
-     */
+    /*
     public boolean removeExpense(int expenseId, int userId,int roomId) {
         Expense expense = expenseDAO.getExpenseById(expenseId);
         // No se puede borra un pago que no haya hecho el mismo usuario
@@ -174,7 +174,7 @@ public class ExpenseManager {
             // Una vez borrado actualizar el balance de los usuarios en la sala
             List<User> users = roomDAO.getUsersInRoom(roomId);
             for (User user : users) {
-                double newBalance = expenseDAO.calculateBalance(user.getId(), roomId);
+                double newBalance = expenseDAO.calculateBalance(UserDAO.getUserIdByName(user.getName()), roomId);
                 System.out.println("Nuevo balance de " + user.getName() + " es: " + newBalance);
             }
             return true;
@@ -183,6 +183,8 @@ public class ExpenseManager {
             return false;
         }
     }
+
+     */
 
     public boolean registerUser(String username, String password) {
         if (username == null || password == null || username.isBlank() || password.isBlank()) {
@@ -195,6 +197,7 @@ public class ExpenseManager {
             return false;
         }
 
-        return userDAO.insertUser(new(Use))
+       //return userDAO.insertUser(new(Use))
+        return true;
     }
 }

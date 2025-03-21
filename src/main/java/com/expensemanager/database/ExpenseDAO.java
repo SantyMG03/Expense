@@ -10,6 +10,7 @@ import java.util.List;
 
 public class ExpenseDAO {
 
+
     public static void createTable() {
         String sql = "CREATE TABLE IF NOT EXISTS expenses (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -57,7 +58,9 @@ public class ExpenseDAO {
      */
     public static List<Expense> getAllExpenses() {
         List<Expense> expenses = new ArrayList<>();
-        String sql = "SELECT e.id, e.amount, u.id AS user_id, u.name, r.id AS room_id, r.name AS room_name " +
+        String sql = "SELECT e.id, e.amount, " +
+                "u.id AS user_id, u.name AS user_name, " +
+                "r.id AS room_id, r.name AS room_name " +
                 "FROM expenses e " +
                 "JOIN users u ON e.payer_id = u.id " +
                 "JOIN rooms r ON e.room_id = r.id";
@@ -65,7 +68,7 @@ public class ExpenseDAO {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                User payer = new User(rs.getInt("user_id"), rs.getString("name"));
+                User payer = new User(rs.getString("name"));
                 Room room = new Room(rs.getInt("room_id"), rs.getString("room_name"));
                 expenses.add(new Expense(rs.getInt("id"), rs.getDouble("amount"), payer, room));
             }
@@ -132,7 +135,7 @@ public class ExpenseDAO {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                User user = UserDAO.getUserById(rs.getInt("payer_id"));
+                User user = UserDAO.getUserByName(rs.getString("name"));
                 int roomId = rs.getInt("room_id");
                 double amount = rs.getDouble("amount");
                 Room room = RoomDAO.getRoomById(roomId);
@@ -150,7 +153,7 @@ public class ExpenseDAO {
      * @param roomId identificador de la sala
      * @return el balance exacto del usuario
      */
-    public double calculateBalance(int userId, int roomId) {
+    public static double calculateBalance(int userId, int roomId) {
         String sql = "SELECT SUM(CASE WHEN payer_id = ? THEN amount ELSE -amount / (SELECT COUNT(*) FROM room_users WHERE room_id = ?) END) AS balance " +
                 "FROM expenses WHERE room_id = ?";
         try (Connection conn = DataBaseManager.connect();

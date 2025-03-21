@@ -1,6 +1,7 @@
 package com.expensemanager.database;
 
 import com.expensemanager.model.Expense;
+import com.expensemanager.model.User;
 import org.junit.jupiter.api.*;
 
 import java.util.List;
@@ -19,10 +20,11 @@ public class ExpenseDAOTest {
     @Test
     @Order(1)
     void testInsertExpense() {
-        int userId = UserDAO.insertUser("Luis");
+        boolean userId = UserDAO.insertUser("Julia", "1098");
         int roomId = RoomDAO.insertRoom("Fiesta de fin de año");
+        assert (userId);
 
-        int expenseId = ExpenseDAO.insertExpense(200.0, userId, roomId);
+        int expenseId = ExpenseDAO.insertExpense(200.0, 19, roomId);
         assert(expenseId > 0);
 
         Expense expense = ExpenseDAO.getExpenseById(expenseId);
@@ -33,11 +35,11 @@ public class ExpenseDAOTest {
     @Test
     @Order(2)
     void testUpdateExpense() {
-        int userId = UserDAO.insertUser("Pedro");
+        boolean userId = UserDAO.insertUser("Pedro", "3232");
         int roomId = RoomDAO.insertRoom("Cena con amigos");
-        int expenseId = ExpenseDAO.insertExpense(150.0, userId, roomId);
+        int expenseId = ExpenseDAO.insertExpense(150.0, 10, roomId);
 
-        boolean updated = ExpenseDAO.updateExpense(expenseId, 180.0, userId, roomId);
+        boolean updated = ExpenseDAO.updateExpense(expenseId, 180.0, 10, roomId);
         assert(updated);
 
         Expense expense = ExpenseDAO.getExpenseById(expenseId);
@@ -54,9 +56,9 @@ public class ExpenseDAOTest {
     @Test
     @Order(4)
     void testDeleteExpense() {
-        int userId = UserDAO.insertUser("María");
+        boolean userId = UserDAO.insertUser("Maria", "Contrasena");
         int roomId = RoomDAO.insertRoom("Camping");
-        int expenseId = ExpenseDAO.insertExpense(250.0, userId, roomId);
+        int expenseId = ExpenseDAO.insertExpense(250.0, 777, roomId);
 
         boolean deleted = ExpenseDAO.deleteExpense(expenseId);
         assert(deleted);

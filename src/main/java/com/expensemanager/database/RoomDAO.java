@@ -130,7 +130,7 @@ public class RoomDAO {
 
     public static List<User> getUsersInRoom(int roomId) {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT u.id, u.name FROM users u " +
+        String sql = "SELECT u.id, u.name, u.psw FROM users u " +
                 "JOIN room_users ru ON u.id = ru.user_id " +
                 "WHERE ru.room_id = ?";
         try (Connection conn = DataBaseManager.connect();
@@ -138,7 +138,7 @@ public class RoomDAO {
             pstmt.setInt(1, roomId);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                users.add(new User(rs.getInt("id"), rs.getString("name")));
+                users.add(new User(rs.getString("name")));
             }
         } catch (SQLException e) {
             System.out.println("Error obteniendo usuarios en la sala: " + e.getMessage());
