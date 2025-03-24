@@ -1,7 +1,5 @@
 package com.expensemanager.ui;
 
-
-import com.expensemanager.App;
 import com.expensemanager.service.ExpenseManager;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;

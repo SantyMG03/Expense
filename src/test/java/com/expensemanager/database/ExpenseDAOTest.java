@@ -4,7 +4,12 @@ import com.expensemanager.model.Expense;
 import com.expensemanager.model.User;
 import org.junit.jupiter.api.*;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ExpenseDAOTest {
@@ -15,6 +20,17 @@ public class ExpenseDAOTest {
         UserDAO.createTable();
         RoomDAO.createTable();
         ExpenseDAO.createTable();
+    }
+
+    @BeforeEach
+    void cleanDatabase() {
+        // Limpiar la tabla antes de cada prueba
+        try (Connection conn = DataBaseManager.connect();
+             PreparedStatement stmt = conn.prepareStatement("DELETE FROM expenses")) {
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            fail("Error al limpiar la base de datos: " + e.getMessage());
+        }
     }
 
     @Test

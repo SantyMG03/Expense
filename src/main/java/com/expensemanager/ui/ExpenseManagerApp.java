@@ -10,13 +10,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.util.List;
 
 public class ExpenseManagerApp extends Application {
 
-    private ExpenseDAO expenseDAO = new ExpenseDAO();
-    private UserDAO userDAO = new UserDAO();
-    private RoomDAO roomDAO = new RoomDAO();
     private ExpenseManager expenseManager;
     private Stage stage;
 

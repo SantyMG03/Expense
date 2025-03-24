@@ -9,12 +9,26 @@ import java.util.List;
 
 public class RoomDAO {
 
+    /**
+     * Este metodo crea la tabla rooms,
+     * adicionalemente crea la tabla rooms_user con claves externas
+     * de userid y roomid
+     */
     public static void createTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS rooms (" +
+        String sql1 = "CREATE TABLE IF NOT EXISTS rooms (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "name TEXT NOT NULL)";
+
+        String sql2 = "CREATE TABLE room_users (" +
+                "    user_id INTEGER NOT NULL," +
+                "    room_id INTEGER NOT NULL," +
+                "    FOREIGN KEY (user_id) REFERENCES users(id)," +
+                "    FOREIGN KEY (room_id) REFERENCES rooms(id)," +
+                "    PRIMARY KEY (user_id, room_id)" +
+                ");";
         try (Connection conn = DataBaseManager.connect(); Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
+            stmt.execute(sql1);
+            stmt.execute(sql2);
         } catch (SQLException e) {
             System.out.println("Error creando la tabla rooms: " + e.getMessage());
         }

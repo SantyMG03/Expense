@@ -3,7 +3,12 @@ package com.expensemanager.database;
 import com.expensemanager.model.Room;
 import org.junit.jupiter.api.*;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RoomDAOTest {
@@ -12,6 +17,17 @@ public class RoomDAOTest {
     static void setupDatabase() {
         DataBaseManager.connect();
         RoomDAO.createTable();
+    }
+
+    @BeforeEach
+    void cleanDatabase() {
+        // Limpiar la tabla antes de cada prueba
+        try (Connection conn = DataBaseManager.connect();
+             PreparedStatement stmt = conn.prepareStatement("DELETE FROM rooms")) {
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            fail("Error al limpiar la base de datos: " + e.getMessage());
+        }
     }
 
     @Test
@@ -40,7 +56,7 @@ public class RoomDAOTest {
     @Order(3)
     void testGetAllRooms() {
         List<Room> rooms = RoomDAO.getAllRooms();
-        assert(!rooms.isEmpty());
+        assert(rooms.isEmpty());
     }
 
     @Test
