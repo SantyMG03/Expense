@@ -160,7 +160,7 @@ public class RoomDAO {
         return users;
     }
 
-    public boolean roomExistByName(String name) {
+    public static boolean roomExistByName(String name) {
         String sql = "SELECT COUNT(*) FROM rooms WHERE name = ?";
         try (Connection conn = DataBaseManager.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {

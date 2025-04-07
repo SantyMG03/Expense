@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -36,9 +37,8 @@ public class ExpenseDAOTest {
     @Test
     @Order(1)
     void testInsertExpense() {
-        boolean userId = UserDAO.insertUser("Julia", "1098");
         int roomId = RoomDAO.insertRoom("Fiesta de fin de año");
-        assert (userId);
+        assertTrue(UserDAO.insertUser("Julia", "1098"));
 
         int expenseId = ExpenseDAO.insertExpense(200.0, 19, roomId);
         assert(expenseId > 0);
