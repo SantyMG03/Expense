@@ -24,11 +24,11 @@ public class ExpenseManager {
     }
 
     public List<Room> getRooms(){
-        return roomDAO.getAllRooms();
+        return RoomDAO.getAllRooms();
     }
 
     public boolean roomExists(int roomId) {
-        return roomDAO.getRoomById(roomId) != null;
+        return RoomDAO.getRoomById(roomId) != null;
     }
 
     public int createRoom(String name) {
@@ -36,7 +36,7 @@ public class ExpenseManager {
             System.out.println("Error: Ya existe una sala con ese nombre");
             return -1;
         }
-        return roomDAO.insertRoom(name);
+        return RoomDAO.insertRoom(name);
     }
 
     /**
@@ -47,10 +47,10 @@ public class ExpenseManager {
      * @return True si se inserto correctamente, false en otro caso.
      */
     public boolean addUserToRoom(int userId, int roomId) {
-        if (userDAO.getUserById(userId) == null || roomDAO.getRoomById(roomId) == null) {
+        if (UserDAO.getUserById(userId) == null || RoomDAO.getRoomById(roomId) == null) {
             return false;
         }
-        return roomDAO.addUserToRoom(userId, roomId);
+        return RoomDAO.addUserToRoom(userId, roomId);
     }
 
     /**
@@ -60,7 +60,7 @@ public class ExpenseManager {
      *      vacia o no existe (mirar getUsersInRoom)
      */
     public List<User> getUsersInRoom(int roomId) {
-        return roomDAO.getUsersInRoom(roomId);
+        return RoomDAO.getUsersInRoom(roomId);
     }
 
     /**
@@ -75,11 +75,11 @@ public class ExpenseManager {
             System.out.println("El monto del gasto tiene que se mayor a 0");
             return -1;
         }
-        if (!roomDAO.isUserInRoom(roomId, payerId)) {
+        if (!RoomDAO.isUserInRoom(roomId, payerId)) {
             System.out.println("El usuario no pertenece a esta sala");
             return -1;
         }
-        List<User> users = roomDAO.getUsersInRoom(roomId);
+        List<User> users = RoomDAO.getUsersInRoom(roomId);
         if (users.isEmpty()) {
             System.out.println("No hay usuarios en la sala");
             return -1;
@@ -93,7 +93,7 @@ public class ExpenseManager {
         }
 
          */
-        return expenseDAO.insertExpense(amount, payerId, roomId);
+        return ExpenseDAO.insertExpense(amount, payerId, roomId);
     }
 
     /**
@@ -130,11 +130,11 @@ public class ExpenseManager {
      * @return devuelve el balance del usuario o 0.0 si hubo algun error
      */
     public double getBalance(int userId, int roomId) {
-        return expenseDAO.calculateBalance(userId, roomId);
+        return ExpenseDAO.calculateBalance(userId, roomId);
     }
 
     public double getUserBalance(int userId, int roomId) {
-        return expenseDAO.calculateBalance(userId, roomId);
+        return ExpenseDAO.calculateBalance(userId, roomId);
     }
 
     /**
@@ -144,7 +144,7 @@ public class ExpenseManager {
      * @param roomId identificador de la sala de la que obtener todos los gastos
      */
     public void showRoomExpenses(int roomId) {
-        List<Expense> expenses = expenseDAO.getExpensesByRoom(roomId);
+        List<Expense> expenses = ExpenseDAO.getExpensesByRoom(roomId);
 
         if (expenses.isEmpty()) {
             System.out.println("No hay gastos registrados en la sala");
@@ -192,12 +192,11 @@ public class ExpenseManager {
             return false;
         }
 
-        if (userDAO.getUserByName(username) != null) {
+        if (UserDAO.getUserByName(username) != null) {
             System.out.println("Usuario ya existente");
             return false;
         }
 
-       //return userDAO.insertUser(new(Use))
-        return true;
+       return UserDAO.insertUser(username, password);
     }
 }
